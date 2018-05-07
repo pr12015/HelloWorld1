@@ -11,6 +11,12 @@ namespace HelloWorld
 {
     public class Container : IContainer
     {
+        /// <summary>
+        ///     Loads the dll using reflection.
+        ///     Then runs the IWorkerRole.Start(string) methot.
+        /// </summary>
+        /// <param name="assemblyPath"> Dll location. </param>
+        /// <returns> Whether or not Load(string) was successfull </returns>
         public string Load(string assemblyPath)
         {
             bool success = false;
@@ -24,7 +30,7 @@ namespace HelloWorld
                     if(obj != null)
                     {
                         MethodInfo mi = obj.GetType().GetMethod("Start");
-                        mi.Invoke(obj, null);
+                        mi.Invoke(obj, new object[] { Server.Port.ToString() });
                         success = true;
                     }
                 }
@@ -37,6 +43,19 @@ namespace HelloWorld
             return "Loading assebmly " + (success ? "was " : "WAS NOT ") + "successfull.";
         }
 
+        /// <summary>
+        ///     Used for fault tolerance.
+        /// </summary>
+        /// <returns> "running" </returns>
+        public string CheckState()
+        {
+            return "running";
+        }
+
+        /// <summary>
+        ///     Loads a C dll using DLLHelper class
+        /// </summary>
+        /// <returns> Whether or not Load_c() was successfull </returns>
         public string Load_c()
         {
             bool success = false;
